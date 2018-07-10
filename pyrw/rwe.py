@@ -40,6 +40,7 @@ class ReadWriteEverything(object):
             exePath = findRWEverything()
 
         self.exePath = exePath
+        self.version = self.getRWEVersion()
 
         if not windll.shell32.IsUserAnAdmin():
             raise EnvironmentError("Please run as admin")
@@ -54,6 +55,28 @@ class ReadWriteEverything(object):
         r = self.callRWECommand("COUT Hello World;rwexit")
         if 'RW Exit' in r.Output and 'Hello World' in r.Output and r.ReturnCode:
             raise EnvironmentError("%s does not appear to be a valid RW-Everything exe" % self.exePath) 
+
+    def getRWEVersion(self):
+        '''
+        Brief:
+            Uses some magic to get the RWE version
+        '''
+        if hasattr(self, 'version'):
+            return self.version
+
+        version = subprocess.check_output('powershell "(Get-Item -path "%s").VersionInfo.FileVersion"' % self.exePath).strip().decode()
+        with open(self.exePath, 'rb') as f:
+            # https://superuser.com/questions/358434/how-to-check-if-a-binary-is-32-or-64-bit-on-windows
+            f.seek(0x204)
+            if f.read(1)[0] == 0x64:
+                b = 'x64'
+            else:
+                b = 'x86'
+
+        v = 'RW - Read Write Utility v%s %s' % (version, b)
+        self.version = v
+        logger.debug("RWE Version: %s" % v)
+        return self.version
 
     def callRawCommand(self, cmd):
         '''

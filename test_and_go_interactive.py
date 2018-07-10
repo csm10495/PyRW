@@ -18,6 +18,7 @@ if __name__ == '__main__':
         rwe = ReadWriteEverything()
         print ('| --------------------------------------------- |')
         print ('| rwe object has been created for your usage... |')
+        print ('| %-45s |' % rwe.getRWEVersion())
         print ('| --------------------------------------------- |')
         # we should be interactive..
     else:
