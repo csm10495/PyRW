@@ -10,8 +10,8 @@ import collections
 import time
 from ctypes import *
 
-from rwe_parser import *
-from pci import PCIDevice
+from pyrw.rwe_parser import *
+from pyrw.pci import PCIDevice
 
 COMPLETION_ENTRY_SIZE = 16
 SUBMISSION_ENTRY_SIZE = 64

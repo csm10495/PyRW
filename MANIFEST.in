@@ -1,1 +1,3 @@
 recursive-include pyrw/bin *exe
+include README.md
+include test_and_go_interactive.py

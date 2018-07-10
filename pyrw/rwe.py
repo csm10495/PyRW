@@ -12,8 +12,9 @@ import subprocess
 import tempfile
 
 from ctypes import *
-from rwe_parser import bytesToDWordList, pciTreeTextToDict, verifyAddress
-from nvme import NVMeDevice, NVME_CLASS_CODE
+
+from pyrw.rwe_parser import bytesToDWordList, pciTreeTextToDict, verifyAddress
+from pyrw.nvme import NVMeDevice, NVME_CLASS_CODE
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class ReadWriteEverything(object):
 
         if exePath is None:
             # import here to prevent a circle
-            from finder import findRWEverything
+            from pyrw.finder import findRWEverything
             exePath = findRWEverything()
 
         self.exePath = exePath

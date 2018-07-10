@@ -8,7 +8,7 @@ Author(s):
 
 import os
 
-from rwe import ReadWriteEverything
+from pyrw.rwe import ReadWriteEverything
 
 THIS_FOLDER = os.path.abspath(os.path.dirname(__file__))
 BIN_FOLDER = os.path.join(THIS_FOLDER, 'bin')
@@ -86,7 +86,6 @@ def findPackagedRWEverything():
     loc = os.path.join(folder, RW_EXE)
     if os.path.isfile(loc):
         return loc
-
 
 def findRWEverything():
     '''
