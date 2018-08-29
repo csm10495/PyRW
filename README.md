@@ -4,7 +4,7 @@ Python Read/Write Everything Wrapper. This module attempts to wrap some of RW-Ev
 
 # Prerequisites
 
-As of now, it is required that you download and install RW-Everything. If using the portable version, it must be available in the system path for the duration of usage.
+As of now, RWE is included with this package.
 
 # RW-Everything
 
