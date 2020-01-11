@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 THIS_FOLDER = os.path.abspath(os.path.dirname(__file__))
 LOCAL_TMP_FILE = os.path.join(THIS_FOLDER, '__tmp.bin')
 ProcessOutput = collections.namedtuple("ProcessOutput", ["Output", "ReturnCode"])
- 
+
 class ReadWriteEverything(object):
     '''
     Brief:
@@ -54,7 +54,7 @@ class ReadWriteEverything(object):
         '''
         r = self.callRWECommand("COUT Hello World;rwexit")
         if 'RW Exit' in r.Output and 'Hello World' in r.Output and r.ReturnCode:
-            raise EnvironmentError("%s does not appear to be a valid RW-Everything exe" % self.exePath) 
+            raise EnvironmentError("%s does not appear to be a valid RW-Everything exe" % self.exePath)
 
     def getRWEVersion(self):
         '''
@@ -64,7 +64,7 @@ class ReadWriteEverything(object):
         if hasattr(self, 'version'):
             return self.version
 
-        version = subprocess.check_output('powershell "(Get-Item -path "%s").VersionInfo.FileVersion"' % self.exePath).strip().decode()
+        version = subprocess.check_output('powershell "(Get-Item -path \\"%s\\").VersionInfo.FileVersion"' % self.exePath).strip().decode()
         with open(self.exePath, 'rb') as f:
             # https://superuser.com/questions/358434/how-to-check-if-a-binary-is-32-or-64-bit-on-windows
             f.seek(0x204)
@@ -82,7 +82,7 @@ class ReadWriteEverything(object):
         '''
         Brief:
             Calls a Raw command on rw.exe
-        ''' 
+        '''
         fullCmd = '\"%s\" %s' % (self.exePath, cmd)
         logger.debug("Calling raw command: %s" % fullCmd)
         try:
@@ -100,16 +100,16 @@ class ReadWriteEverything(object):
         '''
         Brief:
             Calls an embeded RWE command on rw.exe
-        ''' 
-        fullCommand = '/Min /Nologo /Stdout /Command="%s"' % (cmd)
+        '''
+        fullCommand = '/Min /Nologo /Stdout /Command="%s"' % (cmd.replace('\"', '\\"'))
         return self.callRawCommand(fullCommand)
 
     def readMemory(self, byteOffset, numBytes):
         '''
         Brief:
             Reads raw memory from a given offset for a given number of bytes
-        ''' 
-        n = self.callRWECommand("SAVE %s Memory 0x%X %d" % (LOCAL_TMP_FILE, byteOffset, numBytes))
+        '''
+        n = self.callRWECommand("SAVE \"%s\" Memory 0x%X %d" % (LOCAL_TMP_FILE, byteOffset, numBytes))
         assert n.ReturnCode == 0, "Didn't return 0"
         verifyAddress(byteOffset, n.Output)
 
@@ -122,11 +122,11 @@ class ReadWriteEverything(object):
         '''
         Brief:
             Writes given data to the given offset of memory
-        ''' 
+        '''
         with open(LOCAL_TMP_FILE, 'wb') as f:
             f.write(bytearray(data))
 
-        ret = self.callRWECommand('LOAD %s Memory %d' % (LOCAL_TMP_FILE, byteOffset))
+        ret = self.callRWECommand('LOAD "%s" Memory %d' % (LOCAL_TMP_FILE, byteOffset))
         verifyAddress(byteOffset, ret.Output)
 
         os.remove(LOCAL_TMP_FILE)
@@ -136,8 +136,8 @@ class ReadWriteEverything(object):
         '''
         Brief:
             Reads PCI header data from the given device
-        ''' 
-        n = self.callRWECommand("SAVE %s PCI %d %d %d" % (LOCAL_TMP_FILE, bus, device, function))
+        '''
+        n = self.callRWECommand("SAVE \"%s\" PCI %d %d %d" % (LOCAL_TMP_FILE, bus, device, function))
         assert n.ReturnCode == 0, "Didn't return 0"
         with open(LOCAL_TMP_FILE, 'rb') as f:
             data = f.read()
@@ -152,7 +152,7 @@ class ReadWriteEverything(object):
         with open(LOCAL_TMP_FILE, 'wb') as f:
             f.write(bytearray(data))
 
-        ret = self.callRWECommand('LOAD %s Memory %d %d %d' % (LOCAL_TMP_FILE, bus, device, function))
+        ret = self.callRWECommand('LOAD "%s" Memory %d %d %d' % (LOCAL_TMP_FILE, bus, device, function))
         os.remove(LOCAL_TMP_FILE)
         return ret
 
