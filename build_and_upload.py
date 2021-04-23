@@ -21,7 +21,7 @@ try:
     shutil.rmtree(DIST_FOLDER)
 except:
     pass # doesn't exist
-    
+
 
 caller('%s -m pip install twine' % sys.executable)
 
