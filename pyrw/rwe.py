@@ -180,7 +180,7 @@ class ReadWriteEverything(object):
             Gets the PCI class code for a given device
         '''
         d = self.readPCI(bus, device, function)
-        return bytesToDWordList(d[0x09:0x0D])[0]
+        return bytesToDWordList(d[0x09:0x0D])[0] & 0xFFFFFF
 
     def getNVMeDevices(self):
         '''
