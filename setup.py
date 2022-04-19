@@ -10,6 +10,7 @@ setup(
     license='MIT License',
     python_requires='>=2.7',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     classifiers=[
         'Intended Audience :: Developers',
         'Natural Language :: English',
