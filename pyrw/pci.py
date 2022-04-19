@@ -14,7 +14,7 @@ class PCIDevice(object):
     def __init__(self, rwe, address):
         '''
         Brief:
-            Initializer for the object. Takes a RWE instance and the PCI Address
+            Initializer for the object. Takes a RWE instance and the PCI Address (PCILocation)
         '''
         self.rwe = rwe
         self.address = address

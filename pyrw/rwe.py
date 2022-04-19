@@ -135,7 +135,7 @@ class ReadWriteEverything(object):
     def readPCI(self, bus, device, function):
         '''
         Brief:
-            Reads PCI header data from the given device
+            Reads PCI header (configuration space) data from the given device
         '''
         n = self.callRWECommand("SAVE \"%s\" PCI %d %d %d" % (LOCAL_TMP_FILE, bus, device, function))
         assert n.ReturnCode == 0, "Didn't return 0"
@@ -147,7 +147,7 @@ class ReadWriteEverything(object):
     def writePCI(self, bus, device, function, data):
         '''
         Brief:
-            Writes given PCI data to a given device
+            Writes given PCI (configuration space) data to a given device
         '''
         with open(LOCAL_TMP_FILE, 'wb') as f:
             f.write(bytearray(data))

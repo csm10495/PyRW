@@ -102,11 +102,11 @@ class NVMeDevice(PCIDevice):
         CCAddr = bar0 + 0x14
         CSTSAddr = bar0 + 0x1C
 
-        timeoutMs = controllerRegisterData = self.getControllerRegisterData()[2] * 500
+        timeoutMs = self.getControllerRegisterData()[3] * 500
 
         CC0 = self.rwe.readMemory(CCAddr, 1)[0]
         CC0 = ((CC0 >> 1) << 1) # set CC.EN to 0
-        self.rwe.writeMemory(CCAddr, [CC0])
+        assert self.rwe.writeMemory(CCAddr, [CC0]).ReturnCode == 0
 
         deathTime = time.time() + (timeoutMs / 1000.0)
         while time.time() < deathTime:
@@ -118,7 +118,7 @@ class NVMeDevice(PCIDevice):
 
         CC0 = CC0 + 1 # set CC.EN to 1
         self.rwe.writeMemory(CCAddr, [CC0])
-        
+
         deathTime = time.time() + (timeoutMs / 1000.0)
         while time.time() < deathTime:
             CSTS0 = self.rwe.readMemory(CSTSAddr, 1)[0]
@@ -138,6 +138,5 @@ class NVMeDevice(PCIDevice):
 
         if self.rwe.writeMemory(NSSR, [0x4e, 0x56, 0x4d, 0x65]).ReturnCode != 0:
             raise RuntimeError("Failed to write the NSSR")
-        
 
         # todo: check if it worked?
